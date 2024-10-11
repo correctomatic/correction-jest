@@ -1,6 +1,4 @@
-const { iniciarJuego, puntoJugador, resultado } = require("./test1.cjs");
-
-console.log(iniciarJuego)
+const { iniciarJuego, puntoJugador, resultado } = require("./tenisCJS.cjs");
 
 iniciarJuego();
 puntoJugador("jugador1");
