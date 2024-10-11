@@ -1,6 +1,7 @@
 export default [
   {
     ignores: ["**/dist/*"],
+
     languageOptions: {
       ecmaVersion: "latest",
       sourceType: "module",

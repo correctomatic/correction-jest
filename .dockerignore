@@ -1,0 +1,21 @@
+# This file should be .dockerignore once the build is complete
+# It's used when building the child container, used for the correction
+.gitignore
+.git
+.vscode
+*.md
+/node_modules
+
+/cypress.example
+/site
+**/screenshots/**
+**/downloads/**
+
+Dockerfile*
+.dockerignore*
+
+build.sh
+build_dev.sh
+
+*.log
+

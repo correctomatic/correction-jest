@@ -1,0 +1,7 @@
+# This file should be .dockerignore.dev once the build is complete
+# It's used when building the base container, correctomatic/cypress-correction
+*
+!./package.json
+!./run_tests.sh
+!./.env
+!./yarn.lock
