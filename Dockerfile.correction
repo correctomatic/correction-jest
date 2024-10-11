@@ -1,0 +1,7 @@
+FROM correctomatic/cypress-correction:latest
+
+WORKDIR /correction
+
+COPY cypress.config.js .
+COPY .env .
+COPY cypress ./cypress

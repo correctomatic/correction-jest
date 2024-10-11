@@ -1,0 +1,20 @@
+FROM cypress/base:20.17.0
+
+# Install jq for escaping strings
+RUN apt-get update && \
+    apt-get install -y jq && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /correction
+
+COPY package.json yarn.lock ./
+RUN yarn install && \
+    rm -rf /usr/local/share/.cache/yarn
+
+COPY reporters/ \
+     run_tests.sh \
+     .env \
+     ./
+
+CMD ["/correction/run_tests.sh"]
