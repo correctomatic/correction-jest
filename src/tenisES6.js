@@ -3,57 +3,63 @@ const secuenciaPuntuacion = [0, 15, 30, 40];
 let ventaja = null;
 let finalizado = false;
 
-function iniciarJuego() {
+export const iniciarJuego = () => {
   puntos.jugador1 = 0;
   puntos.jugador2 = 0;
   ventaja = null;
   finalizado = false;
-}
+};
 
-function incrementarPuntuacion(jugador) {
+const incrementarPuntuacion = (jugador) => {
   puntos[jugador] = secuenciaPuntuacion[secuenciaPuntuacion.indexOf(puntos[jugador]) + 1];
-}
+};
 
-function esDeuce() {
-  return puntos.jugador1 === 40 && puntos.jugador2 === 40;
-}
+const esDeuce = () => puntos.jugador1 === 40 && puntos.jugador2 === 40;
 
-function manejarVentaja(jugador, oponente) {
-  if (ventaja === jugador) {
+const validarJugador = (jugador) => {
+  if (![1, 2].includes(jugador)) throw new Error('Jugador inválido.');
+};
+
+const manejarFinalizacion = () => {
+  if (finalizado) throw new Error('El juego ya ha finalizado.');
+};
+
+const obtenerClavesJugadores = (jugador) => ({
+  jugadorKey: jugador === 1 ? 'jugador1' : 'jugador2',
+  oponenteKey: jugador === 1 ? 'jugador2' : 'jugador1'
+});
+
+const manejarPuntoEnDeuce = (jugadorKey, oponenteKey) => {
+  if (ventaja === jugadorKey) {
     finalizado = true;
-  } else if (ventaja === oponente) {
+  } else if (ventaja === oponenteKey) {
     ventaja = null;
   } else {
-    ventaja = jugador;
+    ventaja = jugadorKey;
   }
-}
+};
 
-function puntoJugador(jugador) {
-  if (finalizado) throw new Error('El juego ya ha finalizado.');
+export const puntoJugador = (jugador) => {
+  manejarFinalizacion();
+  validarJugador(jugador);
 
-  const oponente = jugador === 'jugador1' ? 'jugador2' : 'jugador1';
+  const { jugadorKey, oponenteKey } = obtenerClavesJugadores(jugador);
 
   if (esDeuce()) {
-    manejarVentaja(jugador, oponente);
-  } else if (puntos[jugador] === 40) {
+    manejarPuntoEnDeuce(jugadorKey, oponenteKey);
+  } else if (puntos[jugadorKey] === 40) {
     finalizado = true;
   } else {
-    incrementarPuntuacion(jugador);
+    incrementarPuntuacion(jugadorKey);
   }
-}
+};
 
-function resultado() {
+export const resultado = () => {
   if (finalizado) return 'Juego terminado';
 
-  if (ventaja) return `Ventaja ${ventaja}`;
+  if (ventaja) return `Ventaja ${ventaja === 'jugador1' ? 'jugador 1' : 'jugador 2'}`;
 
   if (esDeuce()) return 'Deuce';
 
-  return `Jugador 1: ${puntos.jugador1}, Jugador 2: ${puntos.jugador2}`;
-}
-
-export {
-  iniciarJuego,
-  puntoJugador,
-  resultado
-}
+  return `Jugador 1: ${puntos.jugador1} Jugador 2: ${puntos.jugador2}`;
+};

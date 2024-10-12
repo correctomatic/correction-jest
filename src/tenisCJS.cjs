@@ -18,38 +18,58 @@ function esDeuce() {
   return puntos.jugador1 === 40 && puntos.jugador2 === 40;
 }
 
-function manejarVentaja(jugador, oponente) {
-  if (ventaja === jugador) {
+function validarJugador(jugador) {
+  if (![1, 2].includes(jugador)) throw new Error('Jugador inválido.');
+}
+
+function manejarFinalizacion() {
+  if (finalizado) throw new Error('El juego ya ha finalizado.');
+}
+
+function obtenerClavesJugadores(jugador) {
+  return {
+    jugadorKey: jugador === 1 ? 'jugador1' : 'jugador2',
+    oponenteKey: jugador === 1 ? 'jugador2' : 'jugador1'
+  };
+}
+
+function manejarPuntoEnDeuce(jugadorKey, oponenteKey) {
+  if (ventaja === jugadorKey) {
     finalizado = true;
-  } else if (ventaja === oponente) {
+  } else if (ventaja === oponenteKey) {
     ventaja = null;
   } else {
-    ventaja = jugador;
+    ventaja = jugadorKey;
   }
 }
 
 function puntoJugador(jugador) {
-  if (finalizado) throw new Error('El juego ya ha finalizado.');
+  manejarFinalizacion();
+  validarJugador(jugador);
 
-  const oponente = jugador === 'jugador1' ? 'jugador2' : 'jugador1';
+  const { jugadorKey, oponenteKey } = obtenerClavesJugadores(jugador);
 
   if (esDeuce()) {
-    manejarVentaja(jugador, oponente);
-  } else if (puntos[jugador] === 40) {
+    manejarPuntoEnDeuce(jugadorKey, oponenteKey);
+  } else if (puntos[jugadorKey] === 40) {
     finalizado = true;
   } else {
-    incrementarPuntuacion(jugador);
+    incrementarPuntuacion(jugadorKey);
   }
 }
 
 function resultado() {
   if (finalizado) return 'Juego terminado';
 
-  if (ventaja) return `Ventaja ${ventaja}`;
+  if (ventaja) return `Ventaja ${ventaja === 'jugador1' ? 'jugador 1' : 'jugador 2'}`;
 
   if (esDeuce()) return 'Deuce';
 
-  return `Jugador 1: ${puntos.jugador1}, Jugador 2: ${puntos.jugador2}`;
+  return `Jugador 1: ${puntos.jugador1} Jugador 2: ${puntos.jugador2}`;
 }
 
-module.exports = { iniciarJuego, puntoJugador, resultado };
+module.exports = {
+  iniciarJuego,
+  puntoJugador,
+  resultado
+};

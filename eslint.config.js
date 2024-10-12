@@ -17,7 +17,7 @@ const linterOptions = {
   reportUnusedDisableDirectives: true
 }
 
-const plugins =  { jest }
+const plugins =  [jest ]
 
 const rules = {
   complexity: ['error', { max: 5 }],
