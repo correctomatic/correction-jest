@@ -2,6 +2,17 @@ import { exec } from 'child_process'
 import { promisify } from 'util'
 import { stdout } from 'process'
 
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const getCurrentFileDir = () => {
+  const __filename = fileURLToPath(import.meta.url);
+  return dirname(__filename);
+};
+
+const currentFilePath = new URL(import.meta.url).pathname;
+const SOURCES_PATH = `${getCurrentFileDir()}/src/`
+
 const execAsync = promisify(exec)
 
 function failedComments(testResults) {
@@ -15,13 +26,18 @@ function failedComments(testResults) {
   return [ result.join('\n') ]
 }
 
+function getBasePaths(path) {
+  return path.replaceAll(SOURCES_PATH, '')
+}
+
 function syntaxErrorResult(output) {
-  const result = {
+  // Must remove the path to the file until the first src
+  output = getBasePaths(output)
+  return {
     success: true,
     grade: 0,
     comments: [ output ]
   }
-  return JSON.stringify(result)
 }
 
 async function runTests() {
@@ -37,30 +53,24 @@ async function runTests() {
     // await execAsync('yarn test')
     // const testResults = getResults(RESULTS_FILE)
 
-    let grade
-    let comments
+    let result = {}
+    let testPassed = true
 
-    if (testResults.failed.total == 0) {
-      grade = 10
-      comments = [ 'Buen trabajo']
-    } else {
-      grade = 0
-      comments = failedComments(testResults)
+    if (testResults.failed.total !== 0) {
+      testPassed = false
+      result = {
+        success: true,
+        grade: 0,
+        comments: failedComments(testResults)
+      }
     }
 
-    const result = {
-      success: true,
-      grade: grade,
-      comments: comments
-    }
-
-    stdout.write(JSON.stringify(result))
+    return { passed: testPassed, response: result }
 
   } catch (error) {
     // 100 is the error code for a syntax error
     if(error.code === 100) {
-      stdout.write(syntaxErrorResult(error.stdout))
-      return
+      return { passed: false, response: syntaxErrorResult(error.stdout) }
     }
 
     // If we get here, we couldn't run the tests
@@ -68,18 +78,15 @@ async function runTests() {
       success: false,
       error: "Could not run the tests"
     }
-    stdout.write(JSON.stringify(result))
+    return { passed: false, response: result }
   }
-}
 
-function getFileNameFromSrcPath(path) {
-  const match = path.match(/\/src\/(.*)/);
-  return match ? match[1] : null; // Retorna solo la parte después de "/src/"
+
 }
 
 function eslintErrorResult(file) {
 
-  const result = [ `File: ${getFileNameFromSrcPath(file.filePath)}` ]
+  const result = [ `File: ${getBasePaths(file.filePath)}` ]
 
   for(const msg of file.messages) {
     result.push(`  Line ${msg.line}: ${msg.message} (${msg.ruleId})`)
@@ -99,7 +106,7 @@ function eslintErrorsResult(lintResults) {
     if (file.errorCount !== 0) result.comments.push(eslintErrorResult(file))
   }
 
-  return JSON.stringify(result)
+  return result
 }
 
 async function runLinter() {
@@ -107,23 +114,41 @@ async function runLinter() {
     const eslintCommand = 'npx eslint ./src --format json'
     await execAsync(eslintCommand)
     // If we get here, the linter has passed
+    return { passed: true }
+
   } catch (error) {
-    // If we get here, the linter has failed
+
     const { stdout: output } = error
     const lintResult = JSON.parse(output)
 
-    const result = {
-      success: false,
-      error: eslintErrorsResult(lintResult)
-    }
-    stdout.write(JSON.stringify(result))
+    const result = eslintErrorsResult(lintResult)
+    return { passed: false, response: result }
   }
 
 }
 
 async function main() {
-  await runTests()
-  runLinter()
+
+  const successResponse = {
+    success: true,
+    grade: 10,
+    comments: [ "Buen trabajo" ]
+  }
+
+  const { passed: testPassed, response: testResponse } = await runTests()
+  if(!testPassed) {
+    stdout.write(JSON.stringify(testResponse))
+    return
+  }
+
+  const { passed: linterPassed, response: linterResponse } = await runLinter()
+  if(!linterPassed) {
+    stdout.write(JSON.stringify(linterResponse))
+    return
+  }
+
+  // Everything passed
+  stdout.write(JSON.stringify(successResponse))
 }
 
 main()
