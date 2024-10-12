@@ -3,6 +3,7 @@
 *
 !package.json
 !run_correction.sh
+!copy_files.sh
 !.env
 !yarn.lock
 !./reporters
