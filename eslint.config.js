@@ -1,15 +1,15 @@
 
+import globalsConfig from 'globals'
 import jest from 'eslint-plugin-jest'
+
+
 const ignores = ['**/dist/*', '**/node_modules/*', '**/tmp/*']
 
 const globals = {
-  document: 'readonly',
-  window: 'readonly',
-  console: 'readonly',
-  browser: true,
-  es2021: true,
-  jest: 'readonly',
-  node: true,
+  ...globalsConfig.browser,
+  ...globalsConfig.es2021,
+  ...globalsConfig.node,
+  ...globalsConfig.jest
 }
 
 const linterOptions = {
@@ -90,7 +90,8 @@ const configuration =  [
     },
     linterOptions,
     plugins,
-    rules
+    rules,
+    ...jest.configs['flat/recommended'],
   },
   {
     ignores,
@@ -103,6 +104,7 @@ const configuration =  [
     linterOptions,
     plugins,
     rules,
+    ...jest.configs['flat/recommended'],
   },
 ]
 
