@@ -3,15 +3,18 @@ ENV NODE_ENV=production
 
 WORKDIR /correction
 
+RUN mkdir -p ./src
+
 COPY package.json yarn.lock ./
 RUN yarn install --production && \
     rm -rf /usr/local/share/.cache/yarn
+
+COPY reporters/ reporters
 
 COPY run_correction.sh \
      copy_files.sh \
      .env \
      .babelrc \
-     reporters/ \
      correct_exercise.js \
      ./
 
