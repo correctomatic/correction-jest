@@ -37,11 +37,15 @@ async function runTests() {
     // await execAsync('yarn test')
     // const testResults = getResults(RESULTS_FILE)
 
-    let comments = [ 'Buen trabajo']
-    let grade = 10
-    if (testResults.failed.total > 0) {
-      comments = failedComments(testResults)
+    let grade
+    let comments
+
+    if (testResults.failed.total == 0) {
+      grade = 10
+      comments = [ 'Buen trabajo']
+    } else {
       grade = 0
+      comments = failedComments(testResults)
     }
 
     const result = {
@@ -68,4 +72,58 @@ async function runTests() {
   }
 }
 
-runTests()
+function getFileNameFromSrcPath(path) {
+  const match = path.match(/\/src\/(.*)/);
+  return match ? match[1] : null; // Retorna solo la parte después de "/src/"
+}
+
+function eslintErrorResult(file) {
+
+  const result = [ `File: ${getFileNameFromSrcPath(file.filePath)}` ]
+
+  for(const msg of file.messages) {
+    result.push(`  Line ${msg.line}: ${msg.message} (${msg.ruleId})`)
+  }
+
+  return result.join('\n')
+}
+
+function eslintErrorsResult(lintResults) {
+  const result = {
+    success: false,
+    grade: 0,
+    comments: []
+  }
+
+  for(const file of lintResults) {
+    if (file.errorCount !== 0) result.comments.push(eslintErrorResult(file))
+  }
+
+  return JSON.stringify(result)
+}
+
+async function runLinter() {
+  try {
+    const eslintCommand = 'npx eslint ./src --format json'
+    await execAsync(eslintCommand)
+    // If we get here, the linter has passed
+  } catch (error) {
+    // If we get here, the linter has failed
+    const { stdout: output } = error
+    const lintResult = JSON.parse(output)
+
+    const result = {
+      success: false,
+      error: eslintErrorsResult(lintResult)
+    }
+    stdout.write(JSON.stringify(result))
+  }
+
+}
+
+async function main() {
+  await runTests()
+  runLinter()
+}
+
+main()

@@ -1,6 +1,6 @@
 
 import jest from 'eslint-plugin-jest'
-const ignores = ['**/dist/*']
+const ignores = ['**/dist/*', '**/node_modules/*', '**/tmp/*']
 
 const globals = {
   document: 'readonly',
@@ -8,8 +8,8 @@ const globals = {
   console: 'readonly',
   browser: true,
   es2021: true,
-  jest: true,
-  node: true
+  jest: 'readonly',
+  node: true,
 }
 
 const linterOptions = {
@@ -17,7 +17,7 @@ const linterOptions = {
   reportUnusedDisableDirectives: true
 }
 
-const plugins =  [jest ]
+const plugins =  { jest: jest }
 
 const rules = {
   complexity: ['error', { max: 5 }],
@@ -52,7 +52,7 @@ const rules = {
   'no-irregular-whitespace': 'error',
   'no-loss-of-precision': 'error',
   'no-misleading-character-class': 'error',
-  'no-new-symbol': 'error',
+  'no-new-native-nonconstructor': 'error',
   'no-obj-calls': 'error',
   'no-promise-executor-return': 'error',
   'no-prototype-builtins': 'error',
@@ -79,7 +79,7 @@ const rules = {
   'valid-typeof': 'error',
 }
 
-export default [
+const configuration =  [
   {
     ignores,
     files: ['**/*.js'],
@@ -90,7 +90,7 @@ export default [
     },
     linterOptions,
     plugins,
-    rules,
+    rules
   },
   {
     ignores,
@@ -105,3 +105,6 @@ export default [
     rules,
   },
 ]
+
+
+export default configuration
