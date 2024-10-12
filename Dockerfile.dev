@@ -1,13 +1,16 @@
 FROM node:20.9.0-bullseye-slim
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
 
 COPY package.json yarn.lock ./
 RUN yarn install --production && \
     rm -rf /usr/local/share/.cache/yarn
 
-COPY run_tests.sh \
+COPY run_correction.sh \
      .env \
+     .babelrc \
+     reporters/ \
+     correct_exercise.js \
      ./
 
-CMD ["/correction/run_tests.sh"]
+CMD ["/correction/run_correction.sh"]

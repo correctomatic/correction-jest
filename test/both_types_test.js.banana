@@ -1,0 +1,39 @@
+describe('Tennis Score Module', () => {
+  let tennisScore;
+
+  // Helper function to load the module based on module type
+  const loadModule = async (moduleType) => {
+    if (moduleType === 'commonjs') {
+      tennisScore = require('../tennisScore.cjs'); // CommonJS version
+    } else if (moduleType === 'es6') {
+      tennisScore = (await import('../tennisScore.mjs')).default; // ES6 version
+    }
+  };
+
+  ['commonjs', 'es6'].forEach((moduleType) => {
+    describe(`Module Type: ${moduleType}`, () => {
+      beforeAll(async () => {
+        await loadModule(moduleType);
+      });
+
+      test('should start with 0-0 score', () => {
+        const score = tennisScore.getScore();
+        expect(score).toBe('0-0');
+      });
+
+      test('should update score when player 1 wins a point', () => {
+        tennisScore.playerOneScores();
+        const score = tennisScore.getScore();
+        expect(score).toBe('15-0');
+      });
+
+      test('should update score when player 2 wins a point', () => {
+        tennisScore.playerTwoScores();
+        const score = tennisScore.getScore();
+        expect(score).toBe('15-15');
+      });
+
+      // Add more tests as needed...
+    });
+  });
+});

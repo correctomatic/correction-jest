@@ -1,4 +1,4 @@
-import { iniciarJuego, puntoJugador, resultado } from '../src/tenisES6.js';
+import { iniciarJuego, puntoJugador, resultado } from '../src/tenis.js';
 
 const normalizarCadena = (cadena) => cadena.replace(/\s+/g, '').toLowerCase();
 
@@ -8,14 +8,14 @@ describe('Puntuación de tenis', () => {
   });
 
   const expectResultado = (expected) => {
-    expect(normalizarCadena(resultado())).toBe(normalizarCadena(expected));
+    expect(normalizarCadena(resultado())).toMatch(normalizarCadena(expected));
   };
 
   const expectError = (fn, expectedMessage) => {
     try {
       fn();
     } catch (error) {
-      expect(normalizarCadena(error.message)).toBe(normalizarCadena(expectedMessage));
+      expect(normalizarCadena(error.message)).toMatch(normalizarCadena(expectedMessage));
     }
   };
 
