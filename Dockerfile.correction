@@ -6,4 +6,4 @@ WORKDIR /correction
 RUN apt-get update && apt-get install -y vim bash
 
 COPY tests/ tests
-COPY eslint.config.js ./
+COPY eslint.config.js jest.config.js ./

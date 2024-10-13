@@ -36,23 +36,19 @@ function getRuntimeError(results) {
     if (testResult.testExecError) return testResult.testExecError.message;
 }
 
-
 function isFailFastTest(metadata) {
   const chain = [metadata, ...metadata.ancestors()]
   return chain.some((m) => m.get('failFast'))
 }
 
-
-function foo() {
+function failFastResult(testCaseResult) {
   return {
     "failed": {
       "total": 1,
       "tests": [
         {
-          "title": "Fail fast test",
-          "ancestors": [
-            "Puntuación de tenis"
-          ]
+          "title": testCaseResult.title,
+          "ancestors": testCaseResult.ancestorTitles
         }
       ]
     }
@@ -68,9 +64,8 @@ class CustomReporter extends JestMetadataReporter {
     const failFast = isFailFastTest(metadata)
 
     if(failFast && testCaseResult.status === 'failed') {
-      console.log("Fail fast test failed")
-      foo()
-      process.exit(1)
+      console.log(JSON.stringify(failFastResult(testCaseResult), null, 2))
+      process.exit(0)
     }
   }
 

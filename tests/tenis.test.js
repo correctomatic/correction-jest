@@ -1,11 +1,9 @@
 import { iniciarJuego, puntoJugador, resultado } from '../src/tenis.js'
-import { metadata, $Set } from 'jest-metadata';
+import { $Set } from 'jest-metadata';
 
 // Write your own DSL for attaching metadata to test entities
 // Try to namespace your metadata to avoid collisions with other libraries
 const $FailFast = () => $Set('failFast', true);
-// const $Description = (text) => $Set('mycompany.description', text);
-
 import './matchers.js'
 
 // $Description('This is a sample test suite.');
@@ -15,7 +13,20 @@ describe('Puntuación de tenis', () => {
     iniciarJuego()
   })
 
+  // Preconditions. If any of these fail, the test suite will not run
+  // It's useful to ensure that the student's work meets the basic requirements
+  // (output format, function signatures, etc.)
   $FailFast()
+  describe('Preconditions', () => {
+    test('Precondition 1', () => {
+      expect(1).toBe(1)
+    })
+    test('Precondition 2', () => {
+      expect(1).toBe(2)
+    });
+  })
+
+  // $FailFast()
   // $Description('This is a login test.');
   test('Fail fast test', () => {
     expect(1).toBe(2)
@@ -33,6 +44,7 @@ describe('Puntuación de tenis', () => {
     expect(resultado()).toMatchNormalized(expected)
   })
 
+  $FailFast()
   test('Debe incrementar la puntuación de Jugador 2 a 30', () => {
     puntoJugador(2)
     puntoJugador(2)
