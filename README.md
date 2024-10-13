@@ -29,6 +29,14 @@ git remote set-url origin <your repo url>
 
 **TO-DO**: How to install new dependencies. Maybe we need a copy package.json and yarn install again?
 
+If you need to install new dependencies, you can do that with the `yarn add` command. Do not delete the already installed
+dependencies, as they are needed for the container to work. If you modify the `package.json` file, you will need to run
+`yarn install` in the `Dockerfile.correction` file.
+
+In the project there is a `jest.config.js` file that you can modify to configure Jest. It's prepared for fail fast tests
+(you can see an example in tests.example folder) If you want to use the fail fast feature, you will need to keep the corresponding
+line in the file.
+
 ### 1. Create the tests
 
 Install the dependencies with `yarn install` and then create a set of tests in the tests folder.
