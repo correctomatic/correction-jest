@@ -2,8 +2,7 @@
 import globalsConfig from 'globals'
 import jest from 'eslint-plugin-jest'
 
-
-const ignores = ['**/dist/*', '**/node_modules/*', '**/tmp/*']
+const ignores = ['node_modules/**', 'dist/**', 'tmp/**']
 
 const globals = {
   ...globalsConfig.browser,
@@ -20,6 +19,7 @@ const linterOptions = {
 const plugins =  { jest: jest }
 
 const rules = {
+  ...jest.configs['flat/recommended'].rules,
   complexity: ['error', { max: 5 }],
   'array-callback-return': 'error',
   'constructor-super': 'error',
@@ -91,7 +91,6 @@ const configuration =  [
     linterOptions,
     plugins,
     rules,
-    ...jest.configs['flat/recommended'],
   },
   {
     ignores,
@@ -104,9 +103,7 @@ const configuration =  [
     linterOptions,
     plugins,
     rules,
-    ...jest.configs['flat/recommended'],
   },
 ]
-
 
 export default configuration

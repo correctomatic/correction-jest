@@ -6,7 +6,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "lint": "eslint ./src",
+    "lint": "eslint .",
     "test": "jest"
   },
   "dependencies": {

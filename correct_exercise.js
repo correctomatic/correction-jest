@@ -9,8 +9,6 @@ const getCurrentFileDir = () => {
   const __filename = fileURLToPath(import.meta.url);
   return dirname(__filename);
 };
-
-const currentFilePath = new URL(import.meta.url).pathname;
 const SOURCES_PATH = `${getCurrentFileDir()}/src/`
 
 const execAsync = promisify(exec)
@@ -43,9 +41,9 @@ function syntaxErrorResult(output) {
 async function runTests() {
   try {
     const command = 'npx jest --silent --reporters ./reporters/correctomatic-reporter.js'
-    // const command = 'yarn test'
+
     // If we want to get the output of the command, we can use this
-    const { stdout: output, code } = await execAsync(command)
+    const { stdout: output } = await execAsync(command)
     const testResults = JSON.parse(output)
 
 
@@ -80,8 +78,6 @@ async function runTests() {
     }
     return { passed: false, response: result }
   }
-
-
 }
 
 function eslintErrorResult(file) {
