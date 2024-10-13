@@ -6,6 +6,6 @@
 !copy_files.sh
 !.env
 !yarn.lock
-!./reporters
+!./jest
 !./correct_exercise.js
 !.babelrc

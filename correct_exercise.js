@@ -40,7 +40,7 @@ function syntaxErrorResult(output) {
 
 async function runTests() {
   try {
-    const command = 'npx jest --silent --reporters ./reporters/correctomatic-reporter.js'
+    const command = 'npx jest --silent --reporters ./jest/correctomatic-reporter.js'
 
     // If we want to get the output of the command, we can use this
     const { stdout: output } = await execAsync(command)
