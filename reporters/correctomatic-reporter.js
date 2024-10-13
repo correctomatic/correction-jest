@@ -1,3 +1,6 @@
+import { state } from 'jest-metadata';
+import { JestMetadataReporter } from 'jest-metadata/reporter';
+
 function convertResults(results) {
   const converted = {
     failed: {
@@ -34,7 +37,43 @@ function getRuntimeError(results) {
 }
 
 
-class CustomReporter {
+function isFailFastTest(metadata) {
+  const chain = [metadata, ...metadata.ancestors()]
+  return chain.some((m) => m.get('failFast'))
+}
+
+
+function foo() {
+  return {
+    "failed": {
+      "total": 1,
+      "tests": [
+        {
+          "title": "Fail fast test",
+          "ancestors": [
+            "Puntuación de tenis"
+          ]
+        }
+      ]
+    }
+  }
+}
+
+class CustomReporter extends JestMetadataReporter {
+
+  async onTestCaseResult(test, testCaseResult) {
+    await super.onTestCaseResult(test, testCaseResult);
+
+    const metadata = state.getTestFileMetadata(test.path).lastTestEntry;
+    const failFast = isFailFastTest(metadata)
+
+    if(failFast && testCaseResult.status === 'failed') {
+      console.log("Fail fast test failed")
+      foo()
+      process.exit(1)
+    }
+  }
+
   onRunComplete(_contexts, results) {
 
     if(results.numRuntimeErrorTestSuites) {

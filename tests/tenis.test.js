@@ -1,10 +1,24 @@
 import { iniciarJuego, puntoJugador, resultado } from '../src/tenis.js'
+import { metadata, $Set } from 'jest-metadata';
+
+// Write your own DSL for attaching metadata to test entities
+// Try to namespace your metadata to avoid collisions with other libraries
+const $FailFast = () => $Set('failFast', true);
+// const $Description = (text) => $Set('mycompany.description', text);
 
 import './matchers.js'
 
+// $Description('This is a sample test suite.');
+// $FailFast()
 describe('Puntuación de tenis', () => {
   beforeEach(() => {
     iniciarJuego()
+  })
+
+  $FailFast()
+  // $Description('This is a login test.');
+  test('Fail fast test', () => {
+    expect(1).toBe(2)
   })
 
   test('Debe inicializar el juego correctamente', () => {
