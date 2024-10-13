@@ -22,7 +22,7 @@ with `git remote` command:
 
 ```bash
 git remote rename origin correctomatic # Rename the original remote to correctomatic, in case you need to push something
-git remote set-url origin <your repo url>
+git remote add origin <your repo url>
 ```
 
 ### 0. Configure the project
