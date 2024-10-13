@@ -9,7 +9,7 @@ COPY package.json yarn.lock ./
 RUN yarn install --production && \
     rm -rf /usr/local/share/.cache/yarn
 
-COPY reporters/ reporters
+COPY jest/ jest
 
 COPY run_correction.sh \
      copy_files.sh \

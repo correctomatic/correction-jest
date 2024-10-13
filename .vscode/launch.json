@@ -12,7 +12,7 @@
       "program": "${workspaceFolder}/node_modules/.bin/jest",
       "args": [
         // "${fileBasenameNoExtension}",
-        "--reporters=./reporters/correctomatic-reporter.js",
+        "--reporters=./jest/correctomatic-reporter.js",
         "--config",
         "jest.config.js"
       ],

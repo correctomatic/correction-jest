@@ -1,16 +1,23 @@
 import { iniciarJuego, puntoJugador, resultado } from '../src/tenis.js'
-import { $Set } from 'jest-metadata';
+import { $Set } from 'jest-metadata'
 
 // Write your own DSL for attaching metadata to test entities
 // Try to namespace your metadata to avoid collisions with other libraries
-const $FailFast = () => $Set('failFast', true);
+const $FailFast = () => $Set('failFast', true)
 import './matchers.js'
 
-// $Description('This is a sample test suite.');
+// $Description('This is a sample test suite.')
 // $FailFast()
 describe('Puntuación de tenis', () => {
+  let logSpy
+
   beforeEach(() => {
+    logSpy = jest.spyOn(console, 'log').mockImplementation(() => {})
     iniciarJuego()
+  })
+
+  afterEach(() => {
+    logSpy.mockRestore()
   })
 
   // Preconditions. If any of these fail, the test suite will not run
@@ -18,16 +25,11 @@ describe('Puntuación de tenis', () => {
   // (output format, function signatures, etc.)
   $FailFast()
   describe('Preconditions', () => {
-    test('Precondition 1', () => {
-      expect(1).toBe(1)
-    })
-    test('Precondition 2', () => {
-      expect(1).toBe(2)
-    });
+
   })
 
   // $FailFast()
-  // $Description('This is a login test.');
+  // $Description('This is a login test.')
   test('Fail fast test', () => {
     expect(1).toBe(2)
   })
